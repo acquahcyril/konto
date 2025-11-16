@@ -1,0 +1,27 @@
+name: Linux Build & Test
+on: [push, pull_request]
+jobs:
+  Ubuntu-Build-Test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install Required Packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wayland-protocols libwayland-dev libxkbcommon0 libxkbcommon-dev libxkbcommon-tools  xorg-dev libx11-dev
+      - name: Configure
+        run: |
+          mkdir build
+          cd build
+          cmake ..  -DENABLE_TESTING=ON
+      - name: Build
+        run: |
+          cd build
+          make -j `nproc 2>/dev/null`
+      - name: Test
+        run: |
+          cd build
+          ctest
+

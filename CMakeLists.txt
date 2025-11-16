@@ -16,6 +16,8 @@ if(NOT CMAKE_BUILD_TYPE)
         FORCE)
 endif()
 
+option(ENABLE_TESTING "Build test programs" OFF)
+
 set(GLFW_INSTALL OFF)
 set(GLFW_BUILD_DOCS OFF)
 
@@ -26,3 +28,13 @@ add_executable(${PROJECT}
   src/main.cpp
 )
 target_link_libraries(${PROJECT} glad glfw)
+
+if(ENABLE_TESTING)
+  enable_testing()
+  set(TEST_MAIN "unit_tests")
+  add_subdirectory(thirdparty/Catch2)
+  add_executable(${TEST_MAIN} tests/unit_tests.cpp)
+  target_link_libraries(${TEST_MAIN} PUBLIC Catch2::Catch2WithMain)
+  add_test(NAME ${TEST_MAIN} COMMAND ${TEST_MAIN})
+endif()
+
