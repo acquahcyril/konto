@@ -1,3 +1,5 @@
+#include "renderer/renderer.h"
+
 #include <glad/glad.h>
 
 #include <GLFW/glfw3.h>
@@ -12,6 +14,7 @@ void framebuffer_resize(GLFWwindow *window, int width, int height);
 
 int main(const int argc, const char *argv[]) {
   glfwInit();
+  glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -28,9 +31,27 @@ int main(const int argc, const char *argv[]) {
   }
   glfwSetWindowSizeCallback(window, framebuffer_resize);
   glfwSetFramebufferSizeCallback(window, framebuffer_resize);
+
+  kt::Renderer renderer;
+
+  renderer.Init();
   while (!glfwWindowShouldClose(window)) {
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    renderer.Clear();
+    renderer.DrawQuad(glm::vec3{0.0f, 1.0f, 1.0f}, glm::vec2{0.5f},
+                      glm::vec4{1.0f, 0.0f, 0.0f, 1.0f});
+    renderer.DrawQuad(glm::vec3{0.0f, 1.0f, -1.0f}, glm::vec2{1.5f},
+                      glm::vec4{1.0f, 0.0f, 0.0f, 1.0f});
+    renderer.DrawQuad(glm::vec3{0.0f, -1.0f, -1.0f}, glm::vec2{0.75f},
+                      glm::vec4{1.0f, 0.0f, 0.0f, 1.0f});
+    renderer.DrawQuad(glm::vec3{-1.0f, 0.0f, 1.0f}, glm::vec2{1.0f},
+                      glm::vec4{1.0f, 0.0f, 1.0f, 1.0f});
+    renderer.DrawQuad(glm::vec3{0.0f, -2.0f, -10.0f}, glm::vec2{1.0f},
+                      glm::vec4{.0f, 0.0f, 0.0f, 1.0f});
+    renderer.DrawQuad(glm::vec3{-10.0f, -10.0f, 0.0f}, glm::vec2{1.0f},
+                      glm::vec4{1.0f, 0.0f, 0.0f, 1.0f});
+    renderer.DrawQuad(glm::vec3{0.0f, 0.0f, 10.0f}, glm::vec2{1.0f},
+                      glm::vec4{1.0f, 0.0f, 0.0f, 1.0f});
+    renderer.ClearBatch();
     glfwSwapBuffers(window);
     glfwPollEvents();
   }
